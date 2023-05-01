@@ -7,7 +7,7 @@
 public class YahtzeeEngine {
 	// private variables
 	private Dice[] dice; // the array of the rolled dice
-	private int round, bonusPoint; // 100 bonus for Yahtzee
+	private int round, bonusPoint; // 100 bonus for each Yahtzee after the first one
 	private int[] upper, lower; // arrays for upper and lower boards; use for entering scores.
 	private boolean[] scoredUpper, scoredLower; // arrays for scored upper/lower sections
 	
@@ -35,9 +35,9 @@ public class YahtzeeEngine {
 	 * 
 	 * @param reroll
 	 */
-	public void rerollDice(boolean[] reroll) {
+	public void rerollDice(boolean[] rerolledDice) {
 		for (int i = 0; i < 5; i++) {
-			if (reroll[i]) {
+			if (rerolledDice[i]) {
 				dice[i] = new Dice();
 			}
 		}
@@ -48,14 +48,14 @@ public class YahtzeeEngine {
 	 * @param category
 	 * @return boolean
 	 */
-	public boolean scorable(int category) {		
-        if (getSection(category) == 1) {
-        	if (!scoredUpper[category]) return true;
-        } else if (getSection(category) == 2) {
-        	if (!scoredLower[category - 6]) return true;
-        }
+	public boolean canScore(int category) {		
+        	if (getSection(category) == 1) {
+        		if (!scoredUpper[category]) return true;
+        	} else if (getSection(category) == 2) {
+        		if (!scoredLower[category - 6]) return true;
+        	}
         
-        return false;
+        	return false;
 	}
 	
 	/**
@@ -66,7 +66,7 @@ public class YahtzeeEngine {
 	 */
 	public void updateScore(int category) {
 		int score = 0;
-		if (scorable(category)) {
+		if (canScore(category)) {
 			score = computeScore(category);
 			if (getSection(category) == 1) {
 				upper[category] = score;
@@ -85,30 +85,32 @@ public class YahtzeeEngine {
 	 * @return
 	 */
 	public int computeScore(int category) {
-		int[] counts = new int[6]; // number of counts for each face value of a die
+		// 0 1 2 3 4 5 = 1 2 3 4 5 6
+		int[] countForEachNum = new int[6]; // number of counts for each face value of a die
+		
 		for (Dice d : dice) {
 			int index = d.getVal() - 1;
-			counts[index]++;
+			countForEachNum[index]++;
 		}
 
 		if (getSection(category) == 1) {
-			return counts[category] * (category + 1);
+			return countForEachNum[category] * (category + 1);
 		} else {
 			switch (category) {
 			case 6: // three of a kind
-				for (int count : counts) {
+				for (int count : countForEachNum) {
 					if (count >= 3) return getDiceSum(dice);
 				}
 				break;
 			case 7: // four of a kind
-				for (int count : counts) {
+				for (int count : countForEachNum) {
 					if (count >= 4) return getDiceSum(dice);
 				}
 				break;
 			case 8: // full house
 				boolean threeOfAKind = false;
 				boolean pair = false;
-				for (int count : counts) {
+				for (int count : countForEachNum) {
 					if (count == 3) threeOfAKind = true;
 					else if (count == 2) pair = true;
 				}
@@ -116,15 +118,15 @@ public class YahtzeeEngine {
 				if (pair && threeOfAKind) return 25;
 				else return 0;
 			case 9: // small straight
-				if (consecutiveCount(counts) >= 4) return 30;
+				if (consecutiveCount(countForEachNum) >= 4) return 30;
 				break;
 			case 10: // large straight
-				if (consecutiveCount(counts) == 5) return 40;
+				if (consecutiveCount(countForEachNum) == 5) return 40;
                 break;
-			case 11: // yahtzee
-				for (int count : counts) {
+			case 11: // Yahtzee
+				for (int count : countForEachNum) {
 					if (count == 5) {
-						bonusPoint++; // update yathzee count
+						bonusPoint++; // update Yahtzee count
 						return 50;
 					}
 				}
@@ -151,9 +153,8 @@ public class YahtzeeEngine {
 	        upperSum += upper[i];
 	    }
 	    
-	    // check for bonus points
-	    int upperBonus = 0;
-        if (upperSum >= 63) upperBonus = 35;
+	    // if the user has over 63 points in the upper section, then they receive a bonus of 35 points.
+        if (upperSum >= 63) upperSum += 35;
         
         // Lower deck sum
 	    int lowerSum = 0;
@@ -161,12 +162,10 @@ public class YahtzeeEngine {
 	        lowerSum += lower[i];
 	    }
 	    
-	    // check for Yahtzee bonus
-        int bonusScore = 0;
-        if (bonusPoint > 0) bonusScore = (bonusPoint - 1) * 100;
+	    // add Yahtzee bonus
+        if (bonusPoint > 0) lowerSum += (bonusPoint - 1) * 100;
         
-        // Sum everything
-	    return upperSum + upperBonus + lowerSum + bonusScore;
+	    return upperSum + lowerSum;
 	}
 	
 	/*****HELPER METHODS****/
@@ -199,10 +198,11 @@ public class YahtzeeEngine {
 	 * @param counts
 	 * @return
 	 */
-	private int consecutiveCount(int[] counts) {
+	private int consecutiveCount(int[] countForEachNum) {
 	    int consecutive = 0;
 	    int maxConsecutive = Integer.MIN_VALUE;
-	    for (int count : counts) {
+	    
+	    for (int count : countForEachNum) {
 	        if (count >= 1) {
 	            consecutive++;
 	            maxConsecutive = Math.max(maxConsecutive, consecutive);
@@ -218,9 +218,9 @@ public class YahtzeeEngine {
 	 */
 	public void resetDice() {
 		dice = new Dice[5];
-        for (int i = 0; i < 5; i++) {
-            dice[i] = new Dice();
-        }
+        	for (int i = 0; i < 5; i++) {
+            		dice[i] = new Dice();
+        	}
 	}
 	
 	/**
