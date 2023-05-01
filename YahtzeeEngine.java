@@ -1,7 +1,3 @@
-import java.util.Arrays;
-import java.util.Map;
-import java.util.Random;
-
 /**
  * Code for a Yahtzee's logic implementation
  * 
@@ -12,11 +8,11 @@ public class YahtzeeEngine {
 	// private variables
 	private Dice[] dice; // the array of the rolled dice
 	private int round, bonusPoint; // 100 bonus for Yahtzee
-	private int[] upper, lower; // arrays for upper and lower sections
+	private int[] upper, lower; // arrays for upper and lower boards; use for entering scores.
 	private boolean[] scoredUpper, scoredLower; // arrays for scored upper/lower sections
 	
 	// Final variables
-	private final int MAX_ROUNDS = 5; // number of rounds in a game
+	private final int MAX_ROUNDS = 13; // number of rounds in a game
 	
 	/**
 	 * Constructor YahtzeeEngine
@@ -68,7 +64,7 @@ public class YahtzeeEngine {
 	 *
 	 * @param category the index of the category to score.
 	 */
-	public void score(int category) {
+	public void updateScore(int category) {
 		int score = 0;
 		if (scorable(category)) {
 			score = computeScore(category);
@@ -91,7 +87,8 @@ public class YahtzeeEngine {
 	public int computeScore(int category) {
 		int[] counts = new int[6]; // number of counts for each face value of a die
 		for (Dice d : dice) {
-			counts[d.getVal() - 1]++;
+			int index = d.getVal() - 1;
+			counts[index]++;
 		}
 
 		if (getSection(category) == 1) {
@@ -100,34 +97,24 @@ public class YahtzeeEngine {
 			switch (category) {
 			case 6: // three of a kind
 				for (int count : counts) {
-					if (count >= 3) {
-						return getDiceSum(dice);
-					}
+					if (count >= 3) return getDiceSum(dice);
 				}
 				break;
 			case 7: // four of a kind
 				for (int count : counts) {
-					if (count >= 4) {
-						return getDiceSum(dice);
-					}
+					if (count >= 4) return getDiceSum(dice);
 				}
 				break;
 			case 8: // full house
 				boolean threeOfAKind = false;
 				boolean pair = false;
 				for (int count : counts) {
-					if (count == 3) {
-						threeOfAKind = true;
-					} else if (count == 2) {
-						pair = true;
-					}
+					if (count == 3) threeOfAKind = true;
+					else if (count == 2) pair = true;
 				}
 				
-				if (pair && threeOfAKind) {
-					return 25;
-				} else {
-					return 0;
-				}
+				if (pair && threeOfAKind) return 25;
+				else return 0;
 			case 9: // small straight
 				if (consecutiveCount(counts) >= 4) return 30;
 				break;
@@ -137,15 +124,18 @@ public class YahtzeeEngine {
 			case 11: // yahtzee
 				for (int count : counts) {
 					if (count == 5) {
-						bonusPoint++;
+						bonusPoint++; // update yathzee count
 						return 50;
 					}
 				}
 				break;
 			case 12: // Chance
 				return getDiceSum(dice);
+			default:
+				break;
 			}
 		}
+		
 		return 0;
 	}
 	
@@ -155,23 +145,25 @@ public class YahtzeeEngine {
 	 * @return int total score.
 	 */
 	public int getTotalScore() {
-		// Upper deck
-	    int upperSum = Arrays.stream(upper).sum();
-	    int upperBonus;
-        if (upperSum >= 63) {
-            upperBonus = 35;
-        } else {
-            upperBonus = 0;
-        }	    
+		// Upper deck sum	    
+	    int upperSum = 0;
+	    for (int i = 0; i < upper.length; i++) {
+	        upperSum += upper[i];
+	    }
+	    
+	    // check for bonus points
+	    int upperBonus = 0;
+        if (upperSum >= 63) upperBonus = 35;
         
-        // Lower deck
-        int lowerSum = Arrays.stream(lower).sum();
-        int bonusScore;
-        if (bonusPoint > 0) {
-            bonusScore = (bonusPoint - 1) * 100;
-        } else {
-            bonusScore = 0;
-        }
+        // Lower deck sum
+	    int lowerSum = 0;
+	    for (int i = 0; i < lower.length; i++) {
+	        lowerSum += lower[i];
+	    }
+	    
+	    // check for Yahtzee bonus
+        int bonusScore = 0;
+        if (bonusPoint > 0) bonusScore = (bonusPoint - 1) * 100;
         
         // Sum everything
 	    return upperSum + upperBonus + lowerSum + bonusScore;
@@ -196,7 +188,9 @@ public class YahtzeeEngine {
 	 */
 	private int getDiceSum(Dice[] dice) {
 		int result = 0;
-		result = Arrays.stream(dice).mapToInt(Dice::getVal).sum();
+		for (Dice d : dice) {
+	        result += d.getVal();
+	    }
 		return result;
 	}
 	
