@@ -3,7 +3,7 @@
  * Needs to be changed.
  * Printing to console for now.
  * 
- * @author Jenn Pham
+ * @author Jenn Pham & Moon Bui
  */
 import java.util.Arrays;
 import javax.swing.*;
@@ -30,7 +30,7 @@ public class YahtzeeGUI {
 		game = new YahtzeeEngine();
 		frame = new JFrame("Yahtzee Game");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(400,400);
+        frame.setSize(800,800);
         JLabel label = new JLabel("Enter Text");
         JButton send = new JButton("Send");
         ta = new JTextArea();
