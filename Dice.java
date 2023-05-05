@@ -1,7 +1,5 @@
 /**
  * Dice Class
- * @author Jenn Pham
- *
  */
 public class Dice {
 	private int val;
