@@ -3,9 +3,6 @@ import java.util.Comparator;
 
 /**
  * Code for a Yahtzee's logic implementation
- * 
- * @author Jenn Pham
- *
  */
 public class YahtzeeEngine {
 	// private variables
