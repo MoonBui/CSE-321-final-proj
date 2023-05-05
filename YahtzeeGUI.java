@@ -2,8 +2,6 @@
  * Yahtzee Console for GUI Implementation
  * Needs to be changed.
  * Printing to console for now.
- * 
- * @author Jenn Pham & Moon Bui
  */
 import java.util.Arrays;
 import javax.swing.*;
