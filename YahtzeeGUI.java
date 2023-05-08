@@ -30,7 +30,7 @@ public class YahtzeeGUI {
 		game = new YahtzeeEngine();
 		frame = new JFrame("Yahtzee Game");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(800,800);
+        frame.setSize(800, 800);
         JLabel label = new JLabel("Enter Text");
         JButton send = new JButton("Send");
         ta = new JTextArea();
@@ -98,13 +98,13 @@ public class YahtzeeGUI {
 				waitInput();			
 				String rerollInput = input;
 				
-				if (Integer.parseInt(input) == 0)
-					break;
-				else {
+				if (Integer.parseInt(input) != 0) {
 	                for (int i = 0; i < 5; i++) {
 	                    reroll[i] = rerollInput.contains(String.valueOf(i + 1));
 	                }
-				}
+				} else 
+					roll = 2;
+				
                 input = null;
 			}
 		}
