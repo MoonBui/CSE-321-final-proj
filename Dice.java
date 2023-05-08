@@ -2,7 +2,7 @@
  * Dice Class
  */
 public class Dice {
-	private int val;
+	public int val;
 	
 	/**
 	 * Constructor for Dice
