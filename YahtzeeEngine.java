@@ -200,7 +200,7 @@ public class YahtzeeEngine {
 	 */
 	private char isStraight(Dice[] d) {
 		// sort the dice array
-		Arrays.sort(dice, new Comparator<Dice>() {
+		Arrays.sort(d, new Comparator<Dice>() {
 	        @Override
 	        public int compare(Dice d1, Dice d2) {
 	            return d1.getVal() - d2.getVal();
@@ -210,31 +210,24 @@ public class YahtzeeEngine {
 		// variables for straight scenarios
 		// l1, l2 is large straight
 		// s1, s2, s3 is small straight
-		boolean l1 = dice[0].getVal() == 1 && dice[1].getVal() == 2
-					&& dice[3].getVal() == 3 && dice[4].getVal() == 4
-					&& dice[5].getVal() == 5;
+		boolean l1 = (d[0].getVal() == 1) && (d[1].getVal() == 2) && (d[2].getVal() == 3) && (d[3].getVal() == 4) && (d[4].getVal() == 5);
 		
-		boolean l2 = dice[0].getVal() == 2 && dice[1].getVal() == 3 
-					&& dice[2].getVal() == 4 && dice[3].getVal() == 5 
-					&& dice[4].getVal() == 6;
+		boolean l2 = (d[0].getVal() == 2) && (d[1].getVal() == 3) && (d[2].getVal() == 4) && (d[3].getVal() == 5) && (d[4].getVal() == 6);
 		
-		boolean s1 = dice[0].getVal() == 1 && dice[1].getVal() == 2
-					&& dice[3].getVal() == 3 && dice[4].getVal() == 4;
+		boolean s1 = (d[0].getVal() == 1) && (d[1].getVal() == 2) && (d[2].getVal() == 3) && (d[3].getVal() == 4);
 		
-		boolean s2 = dice[0].getVal() == 2 && dice[1].getVal() == 3
-					&& dice[3].getVal() == 4 && dice[4].getVal() == 5;
+		boolean s2 = (d[0].getVal() == 2) && (d[1].getVal() == 3) && (d[2].getVal() == 4) && (d[3].getVal() == 5);
 		
-		boolean s3 = dice[0].getVal() == 3 && dice[1].getVal() == 4
-					&& dice[3].getVal() == 5 && dice[4].getVal() == 6;
+		boolean s3 = (d[0].getVal() == 3) && (d[1].getVal() == 4) && (d[2].getVal() == 5) && (d[3].getVal() == 6);
 		
 		// return
 		if (l1 || l2) {
 	        return 'l';
 	    } else if (s1 || s2 || s3) {
 	        return 's';   // Small straight
-	    } else {
-	        return 'n';   // No straight
 	    }
+		
+	    return 'n';
 		
 	}
 	
