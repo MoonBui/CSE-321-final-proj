@@ -1,4 +1,3 @@
-//package yahtzee;
 import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -56,7 +55,8 @@ class YahtzeeEngineTest {
 		engine.dice[2].val = 2; 
 		engine.dice[3].val = 3; 
 		engine.dice[4].val = 6; 
-		assertEquals(engine.computeScore(0), 2); //aces
+		//edge pair: [1, 2, 3], [1, 2, 4], [2, 3, 2], [2, 4, 5], [2, 4, 6], [3, 1, 2], [4, 6, 7], 
+		assertEquals(engine.computeScore(0), 2); //aces 
 		assertEquals(engine.computeScore(1), 2); //twos
 		assertEquals(engine.computeScore(2), 3); //threes
 		engine.dice[0].val = 4;
@@ -73,22 +73,33 @@ class YahtzeeEngineTest {
 		engine.dice[2].val = 1; 
 		engine.dice[3].val = 3; 
 		engine.dice[4].val = 4; 
+		//edge pair: [4, 6, 8], [6, 7, 15], [7, 15, 16], [15, 16, 17], [15, 16, 18], [16, 18, 15], [16, 18, 19], [18, 15, 16], [18, 19, 42]
 		//adupc: [1, 2, 4, 6, 7, 15, 16, 17]
 		assertEquals(engine.computeScore(6), 10); //3 of a kind
 		engine.dice[3].val = 1; 
+		//edge pair: [4, 6, 9], [6, 8, 20], [8, 20, 21],  [20, 21, 22], [20, 21, 23], [21, 23, 21], [23, 21, 23], [23, 24, 42]
 		//adupc:  [1, 2, 4, 6, 8, 20, 21, 22]
 		assertEquals(engine.computeScore(7), 8);  //4 of a kind 
 		engine.dice[3].val = 3; 
 		engine.dice[4].val = 3;
+		//edge pair: [4, 6, 10], [6, 9, 25], [9, 25, 26], [25, 26, 27], [25, 26, 28], [26, 27, 28], [26, 28, 29], [26, 28, 30], [27, 28, 29], 
+		//[27, 28, 30], [28, 29, 30], [28, 30, 26], [28, 30, 31], [28, 30, 32], [29, 30, 26], [29, 30, 31], [29, 30, 32], [30, 32, 42]
 		//adupc: [1, 2, 4, 6, 9, 25, 26, 27, 28, 29, 30, 31]
 		assertEquals(engine.computeScore(8), 25); //full house 
+		engine.dice[0].val = 1;
+		engine.dice[1].val = 1; 
+		engine.dice[2].val = 2; 
+		engine.dice[3].val = 3; 
+		engine.dice[4].val = 4; 
+		//edge pair: [6, 10, 33], [6, 10, 34], [10, 34, 42]
+		//adupc: [1, 2, 4, 6, 10, 33]
+		assertEquals(engine.computeScore(9), 0); //small straight
 		engine.dice[0].val = 2;
 		engine.dice[1].val = 3; 
 		engine.dice[2].val = 4; 
 		engine.dice[3].val = 5; 
 		engine.dice[4].val = 6; 
-		//adupc: [1, 2, 4, 6, 10, 33]
-		//assertEquals(engine.computeScore(9), 30); //small straight *************** error
+		//edge pair: [4, 6, 11], [6, 11, 35], [6, 11, 36], [11, 36, 42]
 		//adupc: [1, 2, 4, 6, 11, 35]
 		assertEquals(engine.computeScore(10), 40); //large straight 
 		engine.dice[0].val = 1;
@@ -96,10 +107,31 @@ class YahtzeeEngineTest {
 		engine.dice[2].val = 1; 
 		engine.dice[3].val = 1; 
 		engine.dice[4].val = 1; 
+		//edge pair: [4, 6, 12], [6, 12, 37], [12, 37, 38], [37, 38, 39], [37, 38, 40], [38, 40, 37], [40, 37, 38], [40, 41, 42]
 		//adupc: [1, 2, 4, 6, 12, 37, 38, 39]
 		assertEquals(engine.computeScore(11), 50); //yahtzee
 		//adupc: [1, 2, 4, 6, 13]
 		assertEquals(engine.computeScore(12), 5); //chance 
+		//edge pair: [4, 6, 14], [ 6, 14, 42] 
+		engine.scoredUpper[0] = true;
+		engine.scoredUpper[1] = true;
+		engine.scoredUpper[2] = true;
+		engine.scoredUpper[3] = true;
+		engine.scoredUpper[4] = true;
+		engine.scoredUpper[5] = true; 
+		engine.scoredLower[0] = true;
+		engine.scoredLower[1] = true;
+		engine.scoredLower[2] = true;
+		engine.scoredLower[3] = true;
+		engine.scoredLower[4] = true;
+		//engine.scoredLower[5] = true;
+		engine.scoredLower[6] = true;
+		engine.dice[0].val = 1;
+		engine.dice[1].val = 2; 
+		engine.dice[2].val = 3; 
+		engine.dice[3].val = 4; 
+		engine.dice[4].val = 5; 
+		assertEquals(engine.computeScore(11), 0);
 	}//end testComputeScore\
 	
 	@Test 
