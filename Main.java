@@ -1,7 +1,5 @@
 /**
  * Main Class to run the Yahtzee Game
- * @author Jenn Pham
- *
  */
 public class Main {
 

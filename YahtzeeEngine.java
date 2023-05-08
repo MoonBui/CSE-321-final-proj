@@ -1,8 +1,8 @@
+import java.util.Arrays;
+import java.util.Comparator;
+
 /**
  * Code for a Yahtzee's logic implementation
- * 
- * @author Jenn Pham
- *
  */
 public class YahtzeeEngine {
 	// private variables
@@ -35,9 +35,9 @@ public class YahtzeeEngine {
 	 * 
 	 * @param reroll
 	 */
-	public void rerollDice(boolean[] rerolledDice) {
+	public void rerollDice(boolean[] reroll) {
 		for (int i = 0; i < 5; i++) {
-			if (rerolledDice[i]) {
+			if (reroll[i]) {
 				dice[i] = new Dice();
 			}
 		}
@@ -48,14 +48,14 @@ public class YahtzeeEngine {
 	 * @param category
 	 * @return boolean
 	 */
-	public boolean canScore(int category) {		
-        	if (getSection(category) == 1) {
-        		if (!scoredUpper[category]) return true;
-        	} else if (getSection(category) == 2) {
-        		if (!scoredLower[category - 6]) return true;
-        	}
+	public boolean scorable(int category) {		
+        if (getSection(category) == 1) {
+        	if (!scoredUpper[category]) return true;
+        } else if (getSection(category) == 2) {
+        	if (!scoredLower[category - 6]) return true;
+        }
         
-        	return false;
+        return false;
 	}
 	
 	/**
@@ -64,9 +64,9 @@ public class YahtzeeEngine {
 	 *
 	 * @param category the index of the category to score.
 	 */
-	public void updateScore(int category) {
+	public void score(int category) {
 		int score = 0;
-		if (canScore(category)) {
+		if (scorable(category)) {
 			score = computeScore(category);
 			if (getSection(category) == 1) {
 				upper[category] = score;
@@ -89,8 +89,7 @@ public class YahtzeeEngine {
 		int[] countForEachNum = new int[6]; // number of counts for each face value of a die
 		
 		for (Dice d : dice) {
-			int index = d.getVal() - 1;
-			countForEachNum[index]++;
+			countForEachNum[d.getVal() - 1]++;
 		}
 
 		if (getSection(category) == 1) {
@@ -116,12 +115,13 @@ public class YahtzeeEngine {
 				}
 				
 				if (pair && threeOfAKind) return 25;
-				else return 0;
+				
+				break;
 			case 9: // small straight
-				if (consecutiveCount(countForEachNum) >= 4) return 30;
+				if (isStraight(dice) == 's') return 30;
 				break;
 			case 10: // large straight
-				if (consecutiveCount(countForEachNum) == 5) return 40;
+				if (isStraight(dice) == 'l') return 40;
                 break;
 			case 11: // Yahtzee
 				for (int count : countForEachNum) {
@@ -198,19 +198,44 @@ public class YahtzeeEngine {
 	 * @param counts
 	 * @return
 	 */
-	private int consecutiveCount(int[] countForEachNum) {
-	    int consecutive = 0;
-	    int maxConsecutive = Integer.MIN_VALUE;
-	    
-	    for (int count : countForEachNum) {
-	        if (count >= 1) {
-	            consecutive++;
-	            maxConsecutive = Math.max(maxConsecutive, consecutive);
-	        } else {
-	            consecutive = 0;
+	private char isStraight(Dice[] d) {
+		// sort the dice array
+		Arrays.sort(dice, new Comparator<Dice>() {
+	        @Override
+	        public int compare(Dice d1, Dice d2) {
+	            return d1.getVal() - d2.getVal();
 	        }
+	    });
+
+		// variables for straight scenarios
+		// l1, l2 is large straight
+		// s1, s2, s3 is small straight
+		boolean l1 = dice[0].getVal() == 1 && dice[1].getVal() == 2
+					&& dice[3].getVal() == 3 && dice[4].getVal() == 4
+					&& dice[5].getVal() == 5;
+		
+		boolean l2 = dice[0].getVal() == 2 && dice[1].getVal() == 3 
+					&& dice[2].getVal() == 4 && dice[3].getVal() == 5 
+					&& dice[4].getVal() == 6;
+		
+		boolean s1 = dice[0].getVal() == 1 && dice[1].getVal() == 2
+					&& dice[3].getVal() == 3 && dice[4].getVal() == 4;
+		
+		boolean s2 = dice[0].getVal() == 2 && dice[1].getVal() == 3
+					&& dice[3].getVal() == 4 && dice[4].getVal() == 5;
+		
+		boolean s3 = dice[0].getVal() == 3 && dice[1].getVal() == 4
+					&& dice[3].getVal() == 5 && dice[4].getVal() == 6;
+		
+		// return
+		if (l1 || l2) {
+	        return 'l';
+	    } else if (s1 || s2 || s3) {
+	        return 's';   // Small straight
+	    } else {
+	        return 'n';   // No straight
 	    }
-	    return maxConsecutive;
+		
 	}
 	
 	/**
@@ -218,9 +243,9 @@ public class YahtzeeEngine {
 	 */
 	public void resetDice() {
 		dice = new Dice[5];
-        	for (int i = 0; i < 5; i++) {
-            		dice[i] = new Dice();
-        	}
+        for (int i = 0; i < 5; i++) {
+            dice[i] = new Dice();
+        }
 	}
 	
 	/**
