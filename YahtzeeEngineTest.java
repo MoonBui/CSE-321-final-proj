@@ -261,15 +261,16 @@ class YahtzeeEngineTest {
 	
 	
 	@Test
-	//Logic Coverage for isStraight(Dice[] dice)
 	void testIsStraight() {
+		//Logic Coverage for isStraight(Dice[] dice)
 		engine.dice[0].val = 1;
 		engine.dice[1].val = 2; 
 		engine.dice[2].val = 3; 
 		engine.dice[3].val = 4; 
 		engine.dice[4].val = 5;
-		assertEquals(engine.isStraight(engine.dice), 'l');
+		assertEquals(engine.isStraight(engine.dice), 'l'); 	//tests ISP when small & large are true 
 		
+		//edge pair & adupc: [1, 2, 3] 
 		engine.dice[0].val = 2;
 		engine.dice[1].val = 3; 
 		engine.dice[2].val = 4; 
@@ -277,12 +278,13 @@ class YahtzeeEngineTest {
 		engine.dice[4].val = 6;
 		assertEquals(engine.isStraight(engine.dice), 'l');
 		
+		//edge pair & adupc: [1, 2, 4]
 		engine.dice[0].val = 1;
 		engine.dice[1].val = 2; 
 		engine.dice[2].val = 3; 
 		engine.dice[3].val = 4; 
 		engine.dice[4].val = 4;
-		assertEquals(engine.isStraight(engine.dice), 's');
+		assertEquals(engine.isStraight(engine.dice), 's');	//tests ISP when small is true & large is false 
 		
 		engine.dice[0].val = 2;
 		engine.dice[1].val = 3; 
@@ -298,19 +300,16 @@ class YahtzeeEngineTest {
 		engine.dice[4].val = 6;
 		assertEquals(engine.isStraight(engine.dice), 's');
 
+		//edge pair & adupc: [1, 2, 5]
 		engine.dice[0].val = 1;
 		engine.dice[1].val = 1; 
 		engine.dice[2].val = 1; 
 		engine.dice[3].val = 1; 
 		engine.dice[4].val = 1;
-		assertEquals(engine.isStraight(engine.dice), 'n');
-
-
+		assertEquals(engine.isStraight(engine.dice), 'n');	//tests ISP when small & large are false 
 		
 		
-		
-		
-	}
+	}//end testIsSTraight 
 	
 
 }//end class
