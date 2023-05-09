@@ -1,7 +1,5 @@
 /**
  * Yahtzee Console for GUI Implementation
- * Needs to be changed.
- * Printing to console for now.
  */
 import javax.swing.*;
 import java.awt.*;
@@ -61,14 +59,14 @@ public class YahtzeeGUI {
 			playARound();
 		}
 		showTotal();
-		
 		waitInput();
 		String playOption = input;
-
 		if (playOption.equalsIgnoreCase("y")) {
 			input = null;
 			game = new YahtzeeEngine();
 			play();
+		} else if (playOption.equalsIgnoreCase("n")) {
+			frame.dispose();
 		}
 	}
 
@@ -80,7 +78,7 @@ public class YahtzeeGUI {
 		ta.setText("Round " + (game.getRound() + 1) + ":\n");
 		boolean[] reroll = new boolean[5];
 		
-
+		// roll the round
 		for (int roll = 0; roll < 3; roll++) {
 			game.rerollDice(reroll);
 			ta.append(showDice());
@@ -104,9 +102,9 @@ public class YahtzeeGUI {
 			}
 		}
 		
+		// get scoring board
 		ta.append("Scoring board: \n");
 		showScoreOption();
-		
 		int category;
 		do {
 			ta.append("Enter only ONE category to score (0-12): \n");
@@ -139,7 +137,11 @@ public class YahtzeeGUI {
 		String result = "";
 		for (int i = 0; i < 13; i++) {
 			if (game.scorable(i)) {
-				result += i + ". " + getCategory(i) + ": " + game.computeScore(i) + "\n";
+				if (i == 11) {
+					if (game.isYahtzee()) result += i + ". " + getCategory(i) + ": 50" + "\n";
+					else result += i + ". " + getCategory(i) + ": 0" + "\n";
+				}
+				else result += i + ". " + getCategory(i) + ": " + game.computeScore(i) + "\n";
 			}
 		}
 		
@@ -163,6 +165,7 @@ public class YahtzeeGUI {
 	        lower += i + ". " + getCategory(i) + ": " + game.getLower()[i - 6] + "\n";
 	    }
 	    ta.append(lower);
+	    ta.append("Number of Yahtzee scored: " + game.getBonusYahtzee() + "\n");
 	    ta.append("Total score: " + game.getTotalScore() + "\n"); 
 		ta.append("Play another game? (y/n): ");
 	}
@@ -190,5 +193,4 @@ public class YahtzeeGUI {
 	        }
 	    }
 	}
-	
 }
