@@ -6,10 +6,10 @@ import java.util.Comparator;
  */
 public class YahtzeeEngine {
 	// private variables
-	private Dice[] dice; // the array of the rolled dice
-	private int round, bonusPoint; // 100 bonus for each Yahtzee after the first one
-	private int[] upper, lower; // arrays for upper and lower boards; use for entering scores.
-	private boolean[] scoredUpper, scoredLower; // arrays for scored upper/lower sections
+	protected Dice[] dice; // the array of the rolled dice
+	protected int round, bonusPoint; // 100 bonus for each Yahtzee after the first one
+	protected int[] upper, lower; // arrays for upper and lower boards; use for entering scores.
+	protected boolean[] scoredUpper, scoredLower; // arrays for scored upper/lower sections
 	
 	// Final variables
 	private final int MAX_ROUNDS = 13; // number of rounds in a game
@@ -198,7 +198,7 @@ public class YahtzeeEngine {
 	 * @param counts
 	 * @return
 	 */
-	private char isStraight(Dice[] d) {
+	public char isStraight(Dice[] d) {
 		// sort the dice array
 		Arrays.sort(d, new Comparator<Dice>() {
 	        @Override

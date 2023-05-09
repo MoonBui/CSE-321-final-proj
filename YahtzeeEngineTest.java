@@ -3,6 +3,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+
 class YahtzeeEngineTest {
 	YahtzeeEngine engine; 
 
@@ -132,6 +133,33 @@ class YahtzeeEngineTest {
 		engine.dice[3].val = 4; 
 		engine.dice[4].val = 5; 
 		assertEquals(engine.computeScore(11), 0);
+		
+		
+		//Logic Coverage for computeScore
+		int category = 1;
+		assertEquals(engine.computeScore(category), 2);
+		
+		category = 6;
+		assertEquals(engine.computeScore(category), 0);
+		
+		category = 7;
+		assertEquals(engine.computeScore(category), 0);
+		
+		category = 8;
+		assertEquals(engine.computeScore(category), 0);
+		
+		category = 9;
+		assertEquals(engine.computeScore(category), 0);
+		
+		category = 10;
+		assertEquals(engine.computeScore(category), 40);
+		
+		category = 11;
+		assertEquals(engine.computeScore(category), 0);
+		
+		category = 12;
+		assertEquals(engine.computeScore(category), 15);
+		
 	}//end testComputeScore\
 	
 	@Test 
@@ -154,7 +182,10 @@ class YahtzeeEngineTest {
 		assertEquals(engine.getTotalScore(), 199);
 		
 		//adupc: [1, 2, 3, 5, 2, 4, 6, 8, 9, 10, 9, 11, 12, 14]
-		//edge pair: [2, 4, 6], [4, 6, 8], [6, 8, 9], [8, 9, 10], [9, 10, 9], [9, 11, 13], [11, 13, 14] 
+		//edge pair: [2, 4, 6], [4, 6, 8], [6, 8, 9], [8, 9, 10], [9, 10, 9], [9, 11, 13], [11, 13, 14]
+		// Logic Cover: upperSum >= 66 while bonusPoint <= 0
+		
+		engine.bonusPoint = 0;
 		engine.upper[0] = 5; 
 		engine.upper[1] = 10;
 		engine.upper[2] = 6;
@@ -186,6 +217,100 @@ class YahtzeeEngineTest {
 		engine.lower[6] = 5;	//total lower = 168 
 		engine.bonusPoint = 2; 
 		assertEquals(engine.getTotalScore(), 369);
+		
+		
+		// Logic Coverage: upperSum <= 63  while bonus point > 0
+		engine.bonusPoint = 2;
+		engine.upper[0] = 5; 
+		engine.upper[1] = 10;
+		engine.upper[2] = 6;
+		engine.upper[3] = 12;
+		engine.upper[4] = 0;
+		engine.upper[5] = 18;	//total upper = 51
+		engine.lower[0] = 10;
+		engine.lower[1] = 8;
+		engine.lower[2] = 25;
+		engine.lower[3] = 30;
+		engine.lower[4] = 40;
+		engine.lower[5] = 50;
+		engine.lower[6] = 5;	//total lower = 168 
+		assertEquals(engine.getTotalScore(), 319);
+		
+		
+		
 	}//end testGetTotalScore
 	
+	@Test
+	//Logic coverage for scoreable(int category)
+	void testScoreable() {
+		int category = 5;
+		engine.scoredUpper[category] = true;
+		assertFalse(engine.scorable(category));
+		
+		engine.scoredUpper[category] = false;
+		assertTrue(engine.scorable(category));
+		
+		
+		category = 6; 
+		engine.scoredLower[category-6] = true;
+		assertFalse(engine.scorable(category));
+		
+		engine.scoredLower[category-6] = false;
+		assertTrue(engine.scorable(category));		
+	}
+	
+	
+	@Test
+	//Logic Coverage for isStraight(Dice[] dice)
+	void testIsStraight() {
+		engine.dice[0].val = 1;
+		engine.dice[1].val = 2; 
+		engine.dice[2].val = 3; 
+		engine.dice[3].val = 4; 
+		engine.dice[4].val = 5;
+		assertEquals(engine.isStraight(engine.dice), 'l');
+		
+		engine.dice[0].val = 2;
+		engine.dice[1].val = 3; 
+		engine.dice[2].val = 4; 
+		engine.dice[3].val = 5; 
+		engine.dice[4].val = 6;
+		assertEquals(engine.isStraight(engine.dice), 'l');
+		
+		engine.dice[0].val = 1;
+		engine.dice[1].val = 2; 
+		engine.dice[2].val = 3; 
+		engine.dice[3].val = 4; 
+		engine.dice[4].val = 4;
+		assertEquals(engine.isStraight(engine.dice), 's');
+		
+		engine.dice[0].val = 2;
+		engine.dice[1].val = 3; 
+		engine.dice[2].val = 4; 
+		engine.dice[3].val = 5; 
+		engine.dice[4].val = 5;
+		assertEquals(engine.isStraight(engine.dice), 's');
+		
+		engine.dice[0].val = 3;
+		engine.dice[1].val = 4; 
+		engine.dice[2].val = 5; 
+		engine.dice[3].val = 6; 
+		engine.dice[4].val = 6;
+		assertEquals(engine.isStraight(engine.dice), 's');
+
+		engine.dice[0].val = 1;
+		engine.dice[1].val = 1; 
+		engine.dice[2].val = 1; 
+		engine.dice[3].val = 1; 
+		engine.dice[4].val = 1;
+		assertEquals(engine.isStraight(engine.dice), 'n');
+
+
+		
+		
+		
+		
+	}
+	
+
 }//end class
