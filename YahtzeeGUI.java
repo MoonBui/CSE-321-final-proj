@@ -3,7 +3,6 @@
  * Needs to be changed.
  * Printing to console for now.
  */
-import java.util.Arrays;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -28,7 +27,7 @@ public class YahtzeeGUI {
 		game = new YahtzeeEngine();
 		frame = new JFrame("Yahtzee Game");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(800, 800);
+        frame.setSize(800,800);
         JLabel label = new JLabel("Enter Text");
         JButton send = new JButton("Send");
         ta = new JTextArea();
@@ -61,9 +60,7 @@ public class YahtzeeGUI {
 		while (!game.isOver()) {
 			playARound();
 		}
-		showScoreboard();
-		ta.append("\n Total score: " + game.getTotalScore());
-		ta.append("\nPlay another game? (y/n): ");
+		showTotal();
 		
 		waitInput();
 		String playOption = input;
@@ -107,7 +104,7 @@ public class YahtzeeGUI {
 			}
 		}
 		
-		ta.append("\nScoring board:");
+		ta.append("Scoring board: \n");
 		showScoreOption();
 		
 		int category;
@@ -128,10 +125,10 @@ public class YahtzeeGUI {
 	public String showDice() {
 		String result = "Roll: ";
 		for (Dice d : game.getDice()) {
-			result+=d.getVal() + " ";
+			result += d.getVal() + " ";
 		}
-		result+="\n";
-		return result;
+
+		return result += "\n";
 		
 	}
 
@@ -142,7 +139,7 @@ public class YahtzeeGUI {
 		String result = "";
 		for (int i = 0; i < 13; i++) {
 			if (game.scorable(i)) {
-				result += String.format("%2d. %s: %d%n\n", i, getCategory(i), game.computeScore(i));
+				result += i + ". " + getCategory(i) + ": " + game.computeScore(i) + "\n";
 			}
 		}
 		
@@ -152,27 +149,22 @@ public class YahtzeeGUI {
 	/**
 	 * Function to show score board
 	 */
-	public void showScoreboard() {
-		int upperTotal = Arrays.stream(game.getUpper()).sum();
-	    int lowerTotal = Arrays.stream(game.getLower()).sum();
+	public void showTotal() {
 	    String upper = "";
 	    String lower = "";
 
-	    ta.append("Scoreboard:");
+	    ta.append("FINAL SCORE BOARD: \n");
 	    for (int i = 0; i < 6; i++) {
-	        upper+=String.format("%2d. %s: %d%n\n", i, getCategory(i), game.getUpper()[i]);
+	        upper += i + ". " + getCategory(i) + ": " + game.getUpper()[i] + "\n";
 	    }
 	    ta.append(upper);
-	    ta.append("Upper section total: " + upperTotal);
 
 	    for (int i = 6; i < 13; i++) {
-	        lower+=String.format("%2d. %s: %d%n \n", i, getCategory(i), game.getLower()[i - 6]);
+	        lower += i + ". " + getCategory(i) + ": " + game.getLower()[i - 6] + "\n";
 	    }
 	    ta.append(lower);
-	    ta.append("Lower section total: " + lowerTotal);
-
-	    int grandTotal = game.getTotalScore();
-	    ta.append("Grand total: " + grandTotal);
+	    ta.append("Total score: " + game.getTotalScore() + "\n"); 
+		ta.append("Play another game? (y/n): ");
 	}
 
 	/****PRIVATE METHODS***/
