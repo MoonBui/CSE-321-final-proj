@@ -221,9 +221,9 @@ public class YahtzeeEngine {
 		boolean s3 = (d[0].getVal() == 3) && (d[1].getVal() == 4) && (d[2].getVal() == 5) && (d[3].getVal() == 6);
 		
 		// return
-		if (l1 || l2) {
+		if (l1 | l2) {
 	        return 'l';
-	    } else if (s1 || s2 || s3) {
+	    } else if (s1 | s2 | s3) {
 	        return 's';   // Small straight
 	    }
 		
