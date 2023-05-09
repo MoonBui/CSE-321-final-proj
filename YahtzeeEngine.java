@@ -12,7 +12,7 @@ public class YahtzeeEngine {
 	protected boolean[] scoredUpper, scoredLower; // arrays for scored upper/lower sections
 	
 	// Final variables
-	private final int MAX_ROUNDS = 5; // number of rounds in a game
+	private final int MAX_ROUNDS = 13; // number of rounds in a game
 	
 	/**
 	 * Constructor YahtzeeEngine
