@@ -12,7 +12,7 @@ public class YahtzeeEngine {
 	protected boolean[] scoredUpper, scoredLower; // arrays for scored upper/lower sections
 	
 	// Final variables
-	private final int MAX_ROUNDS = 13; // number of rounds in a game
+	private final int MAX_ROUNDS = 5; // number of rounds in a game
 	
 	/**
 	 * Constructor YahtzeeEngine
@@ -52,8 +52,9 @@ public class YahtzeeEngine {
         if (getSection(category) == 1) {
         	if (!scoredUpper[category]) return true;
         } else if (getSection(category) == 2) {
-        	if (!scoredLower[category - 6]) return true;
-        }
+        	if (category == 11) return true;
+            else if (!scoredLower[category - 6]) return true;
+        } 
         
         return false;
 	}
@@ -126,7 +127,7 @@ public class YahtzeeEngine {
 			case 11: // Yahtzee
 				for (int count : countForEachNum) {
 					if (count == 5) {
-						bonusPoint++; // update Yahtzee count
+						bonusPoint++;
 						return 50;
 					}
 				}
@@ -163,7 +164,7 @@ public class YahtzeeEngine {
 	    }
 	    
 	    // add Yahtzee bonus
-        if (bonusPoint > 0) lowerSum += (bonusPoint - 1) * 100;
+        if (bonusPoint > 0) lowerSum = lowerSum + ((bonusPoint - 1) * 100) + (bonusPoint * 50);
         
 	    return upperSum + lowerSum;
 	}
@@ -287,5 +288,21 @@ public class YahtzeeEngine {
 	 */
 	public int getBonusYahtzee() {
 		return bonusPoint;
+	}
+	
+	public boolean isYahtzee() {
+		int[] countForEachNum = new int[6]; // number of counts for each face value of a die
+		
+		for (Dice d : dice) {
+			countForEachNum[d.getVal() - 1]++;
+		}
+		
+		for (int count : countForEachNum) {
+			if (count == 5) {
+				return true;
+			}
+		}
+		
+		return false;
 	}
 }
